@@ -45,6 +45,18 @@ nginx/        proxy reverso e borda HTTP
 
 Pré-requisitos: Docker Engine com Docker Compose v2.
 
+Há inicializadores na raiz do projeto:
+
+```bash
+# Linux
+chmod +x iniciar.sh
+./iniciar.sh
+```
+
+No Windows, execute `iniciar.bat` pelo Explorador de Arquivos ou pelo Prompt de Comando. Os dois scripts exigem `app/.env`, sobem os containers e aplicam as migrations. Eles não recriam volumes nem apagam o banco de dados.
+
+Execução manual equivalente:
+
 1. Revise `app/.env`. Para um ambiente novo, use `app/.env.example` como referência e defina senhas e segredos próprios.
 2. Suba os serviços:
 

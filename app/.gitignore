@@ -11,8 +11,9 @@
 /bootstrap/cache/*
 !/bootstrap/cache/.gitignore
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
+!.env.production.example
 .phpunit.result.cache
 .phpunit.cache/
 Homestead.json
