@@ -1,0 +1,44 @@
+name: local_environment
+variables:
+  - name: base_url
+    value: 'http://localhost:8000/api/v1'
+    description: URL base da API (sem barra no final)
+  - name: token
+    value: ''
+    description: Token JWT - salvo automaticamente pelo Login - Entrar
+  - name: refreshToken
+    value: 'x'
+    description: Refresh token para a rota Renovar Token (qualquer placeholder serve: a rota valida apenas a sessão autenticada)
+  - name: id
+    value: '1'
+    description: ID generico (usuario, imovel, inquilino, lead, modelo)
+  - name: imovelId
+    value: '1'
+    description: ID do imovel
+  - name: contratoId
+    value: '1'
+    description: ID do contrato
+  - name: aditivoId
+    value: '1'
+    description: ID do aditivo
+  - name: parcelaId
+    value: '2'
+    description: ID da parcela (2 e 3 estao pendentes)
+  - name: assinaturaId
+    value: '1'
+    description: ID da assinatura (nasce ao criar contrato)
+  - name: agendamentoId
+    value: '1'
+    description: ID do agendamento
+  - name: interessadoId
+    value: '1'
+    description: ID do interessado
+  - name: manutencaoId
+    value: '1'
+    description: ID da manutencao
+  - name: anotacaoId
+    value: '1'
+    description: ID da anotacao
+  - name: cep
+    value: '01001000'
+    description: CEP para consulta de endereco

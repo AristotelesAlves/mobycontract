@@ -1,0 +1,34 @@
+info:
+  name: Criar Lead
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/leads"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "nome": "Lead Bruno",
+        "email": "lead.bruno0vz1@email.com",
+        "telefone": "11977777777",
+        "imovelDeInteresse": "Apartamento Centro - 2 Quartos",
+        "origem": "Site",
+        "observacoes": "Procurando apartamento 2 quartos"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

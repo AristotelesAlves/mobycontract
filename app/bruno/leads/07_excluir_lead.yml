@@ -1,0 +1,21 @@
+info:
+  name: Excluir Lead
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: "{{base_url}}/leads/{{id}}"
+  auth: inherit
+  headers:
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

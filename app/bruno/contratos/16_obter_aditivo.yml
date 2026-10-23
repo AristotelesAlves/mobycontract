@@ -1,0 +1,21 @@
+info:
+  name: Obter Aditivo
+  type: http
+  seq: 16
+
+http:
+  method: GET
+  url: "{{base_url}}/contratos/{{contratoId}}/aditivos/{{aditivoId}}"
+  auth: inherit
+  headers:
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

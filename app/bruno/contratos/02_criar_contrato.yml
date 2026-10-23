@@ -1,0 +1,43 @@
+info:
+  name: Criar Contrato
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/contratos"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "imovelId": 5,
+        "modeloId": 1,
+        "prazoVigencia": "Determinado",
+        "dataInicio": "2026-11-01",
+        "dataFim": "2027-11-01",
+        "indiceReajuste": "IGP-M",
+        "modoInquilino": "existente",
+        "inquilinoId": 3,
+        "nomeLocador": "Proprietario",
+        "descontoMensal": 0,
+        "multaPorAtraso": 10,
+        "multaRescisao": 3,
+        "garantia": "Sem garantia",
+        "observacoes": "Contrato criado via Bruno",
+        "diaVencimentoParcela": 5
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

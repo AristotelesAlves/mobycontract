@@ -1,0 +1,51 @@
+name: testes
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  blockchain:
+    name: blockchain (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+
+    defaults:
+      run:
+        working-directory: blockchain
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: blockchain/package-lock.json
+
+      - name: instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: compilar contratos
+        run: npm run compile
+
+      - name: verificar tipos
+        run: npm run typecheck
+
+      # Os testes sobem o proprio no EVM em porta efemeraria, entao nao ha
+      # servico externo para esperar: nenhum passo precisa de Polygon Amoy nem
+      # de chave de verdade. A rede em teste e sempre o chainId 31337 local.
+      - name: rodar testes
+        run: npm test

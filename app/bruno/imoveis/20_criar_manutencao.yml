@@ -1,0 +1,33 @@
+info:
+  name: Criar Manutencao
+  type: http
+  seq: 20
+
+http:
+  method: POST
+  url: "{{base_url}}/imoveis/{{imovelId}}/manutencoes"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "titulo": "Conserto de vazamento",
+        "descricao": "Vazamento na torneira",
+        "responsavel": "Encanador",
+        "custo": 150,
+        "status": "Aberto"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

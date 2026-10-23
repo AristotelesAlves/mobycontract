@@ -1,0 +1,36 @@
+info:
+  name: Criar Aditivo
+  type: http
+  seq: 15
+
+http:
+  method: POST
+  url: "{{base_url}}/contratos/{{contratoId}}/aditivos"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "titulo": "Aditivo de Reajuste",
+        "descricao": "Reajuste anual do aluguel",
+        "modeloId": 3,
+        "motivos": [
+          "Valor"
+        ],
+        "novoValor": 2750,
+        "data": "2027-06-01"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

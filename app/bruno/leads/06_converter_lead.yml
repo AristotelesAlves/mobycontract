@@ -1,0 +1,36 @@
+info:
+  name: Converter Lead
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/leads/{{id}}/converter"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "nome": "Locatario Convertido",
+        "cpf": "782.054.370-17",
+        "email": "convertido.bruno9q1@email.com",
+        "telefone": "11988887777",
+        "dataNascimento": "1990-02-02",
+        "estadoCivil": "Solteiro(a)",
+        "renda": 4500,
+        "endereco": "Rua B, 200, Centro"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

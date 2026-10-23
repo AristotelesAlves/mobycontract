@@ -1,0 +1,21 @@
+info:
+  name: Listar Aditivos
+  type: http
+  seq: 14
+
+http:
+  method: GET
+  url: "{{base_url}}/contratos/{{contratoId}}/aditivos"
+  auth: inherit
+  headers:
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

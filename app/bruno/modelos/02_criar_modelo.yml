@@ -1,0 +1,43 @@
+info:
+  name: Criar Modelo
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/modelos"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "titulo": "Modelo Bruno",
+        "tipo": "Contrato",
+        "versao": 1,
+        "conteudoHtml": "<p>Contrato gerado via Bruno</p>",
+        "garantia": "Fiador",
+        "margens": {
+          "superior": 2,
+          "direita": 2,
+          "inferior": 2,
+          "esquerda": 2
+        },
+        "tipografia": {
+          "fonte": "Arial",
+          "tamanho": 12
+        }
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

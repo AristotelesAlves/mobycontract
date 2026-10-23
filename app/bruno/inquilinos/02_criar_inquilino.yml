@@ -1,0 +1,36 @@
+info:
+  name: Criar Inquilino
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/inquilinos"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "nome": "Carlos Teste Bruno",
+        "cpf": "529.982.247-25",
+        "email": "carlos.bruno8yz1@email.com",
+        "telefone": "11999999999",
+        "dataNascimento": "1985-05-15",
+        "estadoCivil": "Solteiro(a)",
+        "renda": 5000,
+        "endereco": "Rua das Flores, 100, Centro"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

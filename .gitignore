@@ -1,0 +1,36 @@
+# O frontend possui repositório e histórico próprios.
+/web/
+
+# Segredos e configurações locais nunca entram no repositório.
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Dependências e saídas geradas.
+**/node_modules/
+**/vendor/
+**/storage/logs/
+**/storage/framework/
+**/bootstrap/cache/
+**/artifacts/
+**/cache/
+**/typechain-types/
+**/.hardhat-cache/
+**/data/
+*.log
+*.key
+.phpunit.result.cache
+.phpunit.cache/
+/app/.ash_history
+/app/.composer/
+
+# Arquivos locais do editor e sistema.
+.idea/
+.vscode/
+.fleet/
+.zed/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

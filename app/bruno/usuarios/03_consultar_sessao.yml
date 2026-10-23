@@ -1,0 +1,24 @@
+info:
+  name: Consultar Sessao
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{base_url}}/usuarios/sessao"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: Bearer {{token}}
+    - name: Authorization
+      value: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiODUzNDM3ZDRkZTUwMTdjNWJlOTVjMzI2YzRkZjE5NGMyZDExOTI0OTYxYjRiYjhiOWNjMGY2YzE5OTQ1ZTY2OGUzNjVmMWZlZTc1ZDIyNjkiLCJpYXQiOjE3OTIzNTgzNjEuMTU4MjI3LCJuYmYiOjE3OTIzNTgzNjEuMTU4MjI5LCJleHAiOjE4MjM4OTQzNjEuMTUwMDQ5LCJzdWIiOiIxIiwic2NvcGVzIjpbIioiXX0.sWizV8uyilPRQNrC-UvrXKq3R45mMR-zVFAayO3WYF_OIDX8PpNLam8Ply3y3212rNwFhLxCo56wcF_p1wn4NqRv2JY0lkIOHLxMre3fjPDBA8Blfa-00H_IdxisAouHhpHn4abskg1XuFKgZxANBOi1CeC3ZFZCCqfvaOYBdog0AUu6a7YJVovRwNa6HaMwGXWiykYEnrnqwgNxm9jscWnu_qZEBZ_EcBhoSWcAKJMnJKZf1AgkRlNmKBysPc61kswREcqTXKAYo4oVpd2tBey8A0rGAlsD1cr_Fyogok3IsOCac3hsZTM20aLD417Lh9ok-7dNqBAZ-cGO4Kk5omP-oy0U969tzYYR2di2StFRxQXCoB8kEWWj63HSPXiLGis6h1Y-CG5pOR-NVyqPVLrdYiZEEPPIg6rabu7aHKLSESWTY04btC-Ipd7aJpJbRPTX8mXe4C8cFLioNNUgXhWR_vaDJYbQ9yrmoliWRx8-qIgqzvsaH-0VySS-mPEzbiCu4k7QHm18Hw8_CoU77PI64T-GifgkDEaJqImio3fo9xoaz0ZWnM09zyhRaYyeGIaDDn4XDBNnxfs5TDGEuJxc_8q3dBVLNNswi1iWSzabRPG54YtgIJ6pa1CAScYepYqljfQxgZNnz4EEWumhxIOG-otAlqe_edBa0HMcR3Q
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

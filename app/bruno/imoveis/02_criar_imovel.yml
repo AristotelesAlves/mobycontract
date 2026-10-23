@@ -1,0 +1,43 @@
+info:
+  name: Criar Imovel
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/imoveis"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "titulo": "Kitnet Bruno",
+        "tipo": "Apartamento",
+        "cep": "60455210",
+        "logradouro": "Rua Teste",
+        "numero": "99",
+        "bairro": "Centro",
+        "cidade": "Fortaleza",
+        "estado": "CE",
+        "area": 45,
+        "quartos": 1,
+        "banheiros": 1,
+        "vagasGaragem": 1,
+        "valorAluguel": 1200,
+        "matricula": "991233",
+        "descricao": "Imovel criado via Bruno"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,21 @@
+info:
+  name: Listar Imoveis
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/imoveis"
+  auth: inherit
+  headers:
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "mobycontract-api",
+  "collections": [
+    "bruno/usuarios",
+    "bruno/contratos",
+    "bruno/imoveis",
+    "bruno/inquilinos",
+    "bruno/leads",
+    "bruno/modelos"
+  ]
+}

@@ -1,0 +1,33 @@
+info:
+  name: Criar Usuario
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{base_url}}/usuarios"
+  auth: inherit
+  headers:
+    - name: Content-Type
+      value: "application/json"
+    - name: Accept
+      value: "application/json"
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: application/json
+    raw: |
+      {
+        "nome": "Operador Bruno",
+        "email": "operador.bruno7mzj@mobycontract.com",
+        "senha": "senha1234",
+        "papel": "Operador",
+        "ativo": true
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
