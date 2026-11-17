@@ -1,84 +1,95 @@
 # MobyContract
 
-Backend Laravel para gestão de imóveis, inquilinos, contratos, aditivos, vistorias e parcelas.
+Sistema web desenvolvido como parte de um Trabalho de Conclusão de Curso (TCC), complementando um projeto de blockchain por meio do consumo de sua API. A solução blockchain pode atender a diferentes nichos; neste projeto, o setor imobiliário foi escolhido para demonstrar sua aplicação na gestão de imóveis e contratos.
 
-O ambiente Docker executa a API com Nginx, PHP-FPM, worker de filas, PostgreSQL e Redis para cache e filas.
+## Iniciar
 
-## Execução local
+Requisitos: Docker com Compose v2 e portas **8000** e **3000** livres. Execute na raiz do projeto.
 
-Requisito: Docker Engine com Docker Compose v2. Execute na raiz do repositório.
-
-Se `app/.env` ainda não existir:
+**1. Crie o arquivo de configuração** (se ainda não existir):
 
 ```bash
 cp app/.env.example app/.env
+cp web/.env.example web/.env.local
 ```
 
-Preencha `DB_PASSWORD` e `POSTGRES_PASSWORD` com a mesma senha. Para gerar a chave do Laravel:
+No Windows:
+
+```bat
+copy app\.env.example app\.env
+copy web\.env.example web\.env.local
+```
+
+Edite `app/.env`: preencha `DB_PASSWORD` e `POSTGRES_PASSWORD` com **a mesma senha**. Mantenha `DB_HOST=db` e os demais valores do exemplo.
+
+O `web/.env.local` configura o frontend executado fora do Docker. No Docker, as URLs da API já são definidas pelo Compose.
+
+**2. Prepare a rede:**
+
+```bash
+docker network inspect mobycontract-integracao >/dev/null 2>&1 || docker network create mobycontract-integracao
+```
+
+**3. Gere a chave do Laravel** (somente se `APP_KEY` estiver vazia):
 
 ```bash
 docker compose build app
 docker compose run --rm --no-deps app php artisan key:generate --show
 ```
 
-Copie a chave exibida para `APP_KEY` em `app/.env`. Depois:
+Copie a chave exibida (`base64:...`) para `APP_KEY` em `app/.env`. O comando não salva no arquivo local; o Compose também não gera essa chave automaticamente.
+
+**4. Suba os serviços:**
 
 ```bash
 docker compose up --build -d
+docker compose ps
 ```
 
-Com o `.env` configurado, também é possível executar `bash iniciar.sh` no Linux/WSL ou `iniciar.bat` no Windows.
+Aguarde os serviços ficarem saudáveis. As migrations e a configuração do Passport são executadas automaticamente.
 
-API: `http://localhost:8000/api/v1`. Saúde: `http://localhost:8000/up`.
-
-Os dados persistem em volumes Docker. O código PHP e suas dependências são incluídos na imagem; após alterar o código, execute `docker compose up --build -d`.
-
-O entrypoint definido no Dockerfile aplica as migrations e prepara o cliente OAuth
-automaticamente antes de iniciar o PHP-FPM, sem duplicar clientes existentes.
-As chaves do Passport são geradas na primeira inicialização da API e persistidas,
-junto aos demais arquivos de estado do Laravel, no volume `estado-app`.
-
-## Frontend no Docker
-
-O frontend Next.js fica em `web/` e sobe junto com os demais serviços em
-`docker compose up --build -d`. Acesse `http://localhost:8000`.
-
-Para reconstruir e iniciar somente o frontend com suas dependências:
+**5. Crie os dados de demonstração** (primeira execução local):
 
 ```bash
-docker compose up --build -d web nginx
+docker compose exec app php artisan db:seed
 ```
 
-A imagem inclui Chromium para exportar PDFs e executa com usuário sem privilégios.
-O Nginx encaminha `/` para o Next.js e `/api` para o Laravel. No navegador,
-a API usa `/api/v1`, no mesmo endereço do frontend. Para outro endereço,
-defina `NEXT_PUBLIC_BASE_URI_API` no ambiente ou no `.env` da raiz antes do build;
-essa variável é incorporada ao JavaScript durante a compilação. Dentro do
-container, a exportação de PDFs usa `BASE_URI_API=http://nginx/api/v1`.
+Acesse **http://localhost:8000/login**:
 
-Para construir a imagem separadamente, execute na raiz:
+- E-mail: `admin@mobycontract.com`
+- Senha: `senha1234`
+
+O seeder cria dados de exemplo e redefine as contas de demonstração quando repetido. Use apenas no ambiente local.
+
+## Comandos úteis
 
 ```bash
-docker build -t mobycontract/web:local ./web
+# Iniciar novamente
+docker compose up -d
+
+# Reconstruir após alterar código
+docker compose up --build -d
+
+# Aplicar alterações no app/.env à API e à fila
+docker compose up -d --force-recreate app queue
+
+# Ver logs
+docker compose logs --tail 100 app db nginx
+
+# Parar, preservando os dados
+docker compose down
 ```
 
-## Estrutura
+API: `http://localhost:8000/api/v1`. Frontend direto: `http://localhost:3000`.
 
-- `app/`: API Laravel, migrations, testes e configurações de ambiente.
-- `docker/`: Dockerfile PHP e configurações de infraestrutura.
-- `nginx/`: configuração HTTP da API.
-- `docker-compose.yml`: ambiente local executado a partir da raiz.
-- `web/`: frontend Next.js e Dockerfile com build em etapas.
+## Se der erro
 
-## Testes e qualidade
-
-O serviço opcional `cli` contém as dependências de desenvolvimento:
+- **Banco unhealthy:** confira `POSTGRES_PASSWORD` e os logs de `db`. As credenciais de um banco já criado não mudam apenas editando o `.env`.
+- **INTERNAL_ERROR no login:** confira `APP_KEY` e leia o log abaixo.
+- **Porta ocupada:** libere 8000/3000 ou ajuste as portas no Compose.
 
 ```bash
-docker compose build cli
-docker compose run --rm cli php artisan test --compact
-docker compose run --rm cli php vendor/bin/phpstan analyse --memory-limit=1G
-docker compose run --rm cli php vendor/bin/pint --test
+docker compose exec app sh -c 'tail -n 100 storage/logs/*.log'
 ```
 
-O banco de testes é `mobycontract_teste`, separado do banco principal.
+O registro na blockchain exige o serviço externo `registry` na rede `mobycontract-integracao` e os valores `BLOCKCHAIN_*` configurados no `app/.env`. Ele não é necessário para fazer login.
