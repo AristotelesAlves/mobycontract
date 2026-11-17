@@ -1,7 +1,7 @@
 import { formatDate, formatCurrency } from "@/lib/formatters";
 import { documentHtmlForExport, type DocumentExport } from "@/lib/tiptap/html";
-import { DOCUMENT_DEFAULT_MARGINS } from "@/lib/tiptap/document-geometry";
-import { DOCUMENT_DEFAULT_TYPOGRAPHY } from "@/lib/tiptap/document-style";
+import { DOCUMENT_DEFAULT_MARGINS, normalizeDocumentMargins } from "@/lib/tiptap/document-geometry";
+import { DOCUMENT_DEFAULT_TYPOGRAPHY, normalizeDocumentTypography } from "@/lib/tiptap/document-style";
 import { type Contrato } from "../data/contrato-types";
 import type { IModeloClonar } from "@/features/modelos/data/modelo-types";
 
@@ -50,8 +50,8 @@ export function gerarHtmlContrato(
   const documentExport: DocumentExport = {
     title: `Contrato ${contrato.numero}`,
     htmlContent,
-    margins: snapshot?.modelo.margens ?? DOCUMENT_DEFAULT_MARGINS,
-    typography: snapshot?.modelo.tipografia ?? DOCUMENT_DEFAULT_TYPOGRAPHY,
+    margins: normalizeDocumentMargins(snapshot?.modelo.margens ?? DOCUMENT_DEFAULT_MARGINS),
+    typography: normalizeDocumentTypography(snapshot?.modelo.tipografia ?? DOCUMENT_DEFAULT_TYPOGRAPHY),
     pageCount: 1,
     values,
   };
