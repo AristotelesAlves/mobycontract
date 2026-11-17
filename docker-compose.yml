@@ -91,8 +91,6 @@ services:
       start_period: 40s
     mem_limit: 768M
     logging: *log
-    ports:
-      - "8080:8000"
 
   queue:
     image: mobycontract/app:local
