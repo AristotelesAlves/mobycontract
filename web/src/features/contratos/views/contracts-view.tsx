@@ -57,11 +57,6 @@ const STATUS_VARIANTS: Record<
   Minuta: "outline",
   Cancelado: "destructive",
   Rascunho: "outline",
-  rascunho: "outline",
-  ativo: "secondary",
-  vencido: "destructive",
-  rescindido: "destructive",
-  finalizado: "outline",
 };
 
 const STATUS_CHIPS: Array<{ valor: ContractsStatusFilter; label: string }> = [

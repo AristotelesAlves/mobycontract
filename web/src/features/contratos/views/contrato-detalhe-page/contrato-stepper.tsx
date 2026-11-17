@@ -11,12 +11,7 @@ const STATUS_VARIANTS: Record<
   ContratoStatus,
   "default" | "secondary" | "destructive" | "outline" | "positive"
 > = {
-  rascunho: "outline",
   Rascunho: "outline",
-  ativo: "positive",
-  vencido: "destructive",
-  rescindido: "destructive",
-  finalizado: "outline",
   Validado: "positive",
   Vigente: "positive",
   Pendente: "secondary",
