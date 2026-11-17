@@ -30,14 +30,6 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Aplicando migrations do banco de dados...
-docker compose exec -T api php artisan migrate --force
-if errorlevel 1 (
-    echo ERRO: os containers foram iniciados, mas as migrations falharam.
-    exit /b 1
-)
-
-echo.
 echo Sistema iniciado com sucesso.
 echo Acesse: http://localhost:8000
 echo Para acompanhar os logs: docker compose logs -f

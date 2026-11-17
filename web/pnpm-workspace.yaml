@@ -1,0 +1,9 @@
+packages:
+  - .
+allowBuilds:
+  msw: true
+  sharp: true
+  unrs-resolver: true
+  puppeteer: false
+overrides:
+  postcss: ^8.5.18

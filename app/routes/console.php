@@ -4,6 +4,23 @@ declare(strict_types=1);
 
 use App\Modules\Usuarios\Jobs\AnonimizarAuditLogsAntigos;
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Passport\ClientRepository;
+
+Artisan::command('auth:preparar', function (ClientRepository $clientes): void {
+    try {
+        $cliente = $clientes->personalAccessClient();
+    } catch (\RuntimeException) {
+        $cliente = null;
+    }
+
+    if ($cliente === null || $cliente->revoked) {
+        $clientes->createPersonalAccessClient(null, 'MobyContract', 'http://localhost');
+        $this->info('Cliente OAuth pessoal criado.');
+    } else {
+        $this->info('Cliente OAuth pessoal pronto.');
+    }
+})->purpose('Prepara o cliente OAuth para emitir tokens de login sem duplicar clientes.');
 
 /*
 |--------------------------------------------------------------------------

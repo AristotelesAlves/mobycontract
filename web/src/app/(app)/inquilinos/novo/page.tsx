@@ -1,0 +1,1 @@
+export { NovoInquilinoView as default } from "@/features/inquilinos/views/novo-inquilino-view"

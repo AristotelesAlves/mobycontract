@@ -16,7 +16,4 @@ docker compose version >/dev/null 2>&1 || erro 'Docker Compose não está dispon
 printf 'Subindo os serviços...\n'
 docker compose up --build -d
 
-printf 'Aplicando migrations do banco de dados...\n'
-docker compose exec -T api php artisan migrate --force
-
 printf '\nSistema iniciado com sucesso.\nAcesse: http://localhost:8000\nPara acompanhar os logs: docker compose logs -f\n'

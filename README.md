@@ -1,111 +1,84 @@
 # MobyContract
 
-MVP acadêmico para gestão de contratos de locação. A aplicação registra imóveis, inquilinos, contratos, aditivos e vistorias. Após a assinatura, o arquivo PDF é preservado no armazenamento da aplicação e seu hash SHA-256 é ancorado na camada blockchain para permitir a verificação posterior de integridade.
+Backend Laravel para gestão de imóveis, inquilinos, contratos, aditivos, vistorias e parcelas.
 
-## O que o sistema faz
-
-- Gerencia imóveis, inquilinos, contratos, aditivos, vistorias e parcelas.
-- Controla acesso por sessão em cookie seguro, papéis e permissões da API.
-- Gera, armazena e disponibiliza documentos do contrato.
-- Calcula o SHA-256 do PDF assinado e o compara com a âncora registrada.
-- Permite consultar uma transação e o hash documental correspondente.
-
-A assinatura digital e a blockchain têm papéis complementares: a assinatura comprova autoria, integridade e manifestação de vontade no momento da assinatura; a blockchain registra a evidência do hash e facilita a auditoria de que o mesmo arquivo permaneceu íntegro depois desse momento.
-
-## Arquitetura
-
-```text
-Navegador
-    │
-    ▼
-Nginx ───────────► Next.js (web)
-    │
-    ├────────────► Laravel (API) ───► PostgreSQL / Redis / arquivos
-    │                              │
-    │                              ▼
-    └────────────────────────► Registry Node.js ───► Anvil / contratos Solidity
-```
-
-O frontend usa Next.js e organiza o código por funcionalidade de negócio (`features/contratos`, `features/imoveis`, `features/inquilinos` e `features/vistorias`). Componentes visuais e utilitários permanecem compartilhados.
-
-O backend Laravel segue um MVC adaptado para API: rota, middleware, request de validação, controller, DTO, serviço, repositório e modelo. Os módulos concentram o vocabulário de cada domínio e as dependências externas ficam em `Shared/Infrastructure`.
-
-A camada blockchain possui contratos Solidity, um registry Node.js e portas de aplicação que separam regras de ancoragem da implementação EVM. No ambiente local, o ledger é Anvil; a configuração Besu/QBFT disponível no repositório é uma evolução para uma rede permissionada com validadores independentes.
-
-## Estrutura do repositório
-
-```text
-app/          API Laravel, migrations, testes e armazenamento
-web/          interface Next.js
-blockchain/   contratos Solidity, registry Node.js e testes Hardhat
-nginx/        proxy reverso e borda HTTP
-```
+O ambiente Docker executa a API com Nginx, PHP-FPM, worker de filas, PostgreSQL e Redis para cache e filas.
 
 ## Execução local
 
-Pré-requisitos: Docker Engine com Docker Compose v2.
+Requisito: Docker Engine com Docker Compose v2. Execute na raiz do repositório.
 
-Há inicializadores na raiz do projeto:
+Se `app/.env` ainda não existir:
 
 ```bash
-# Linux
-chmod +x iniciar.sh
-./iniciar.sh
+cp app/.env.example app/.env
 ```
 
-No Windows, execute `iniciar.bat` pelo Explorador de Arquivos ou pelo Prompt de Comando. Os dois scripts exigem `app/.env`, sobem os containers e aplicam as migrations. Eles não recriam volumes nem apagam o banco de dados.
+Preencha `DB_PASSWORD` e `POSTGRES_PASSWORD` com a mesma senha. Para gerar a chave do Laravel:
 
-Execução manual equivalente:
+```bash
+docker compose build app
+docker compose run --rm --no-deps app php artisan key:generate --show
+```
 
-1. Revise `app/.env`. Para um ambiente novo, use `app/.env.example` como referência e defina senhas e segredos próprios.
-2. Suba os serviços:
+Copie a chave exibida para `APP_KEY` em `app/.env`. Depois:
 
-   ```bash
-   docker compose up --build -d
-   ```
+```bash
+docker compose up --build -d
+```
 
-3. Aplique as migrations:
+Com o `.env` configurado, também é possível executar `bash iniciar.sh` no Linux/WSL ou `iniciar.bat` no Windows.
 
-   ```bash
-   docker compose exec api php artisan migrate --force
-   ```
+API: `http://localhost:8000/api/v1`. Saúde: `http://localhost:8000/up`.
 
-4. Acesse `http://localhost:8000`.
+Os dados persistem em volumes Docker. O código PHP e suas dependências são incluídos na imagem; após alterar o código, execute `docker compose up --build -d`.
 
-Os dados persistem nos volumes do Docker. Executar `docker compose up --build` reconstrói imagens quando necessário, mas não apaga volumes. Para remover também os dados persistidos seria preciso uma ação explícita sobre os volumes.
+O entrypoint definido no Dockerfile aplica as migrations e prepara o cliente OAuth
+automaticamente antes de iniciar o PHP-FPM, sem duplicar clientes existentes.
+As chaves do Passport são geradas na primeira inicialização da API e persistidas,
+junto aos demais arquivos de estado do Laravel, no volume `estado-app`.
+
+## Frontend no Docker
+
+O frontend Next.js fica em `web/` e sobe junto com os demais serviços em
+`docker compose up --build -d`. Acesse `http://localhost:8000`.
+
+Para reconstruir e iniciar somente o frontend com suas dependências:
+
+```bash
+docker compose up --build -d web nginx
+```
+
+A imagem inclui Chromium para exportar PDFs e executa com usuário sem privilégios.
+O Nginx encaminha `/` para o Next.js e `/api` para o Laravel. No navegador,
+a API usa `/api/v1`, no mesmo endereço do frontend. Para outro endereço,
+defina `NEXT_PUBLIC_BASE_URI_API` no ambiente ou no `.env` da raiz antes do build;
+essa variável é incorporada ao JavaScript durante a compilação. Dentro do
+container, a exportação de PDFs usa `BASE_URI_API=http://nginx/api/v1`.
+
+Para construir a imagem separadamente, execute na raiz:
+
+```bash
+docker build -t mobycontract/web:local ./web
+```
+
+## Estrutura
+
+- `app/`: API Laravel, migrations, testes e configurações de ambiente.
+- `docker/`: Dockerfile PHP e configurações de infraestrutura.
+- `nginx/`: configuração HTTP da API.
+- `docker-compose.yml`: ambiente local executado a partir da raiz.
+- `web/`: frontend Next.js e Dockerfile com build em etapas.
 
 ## Testes e qualidade
 
-O PostgreSQL de testes é `mobycontract_teste`, separado do banco principal. A suíte da blockchain usa esse banco apenas para testar o registry e limpa a tabela de chaves de API antes de cada caso.
-
-Backend:
+O serviço opcional `cli` contém as dependências de desenvolvimento:
 
 ```bash
-docker compose exec api php artisan test --compact
-docker compose exec api php vendor/bin/phpstan analyse --memory-limit=1G
-docker compose exec api php vendor/bin/pint --test
+docker compose build cli
+docker compose run --rm cli php artisan test --compact
+docker compose run --rm cli php vendor/bin/phpstan analyse --memory-limit=1G
+docker compose run --rm cli php vendor/bin/pint --test
 ```
 
-Blockchain, com banco de testes na rede interna:
-
-```bash
-docker compose --profile test build blockchain-test
-docker compose --profile test run --rm blockchain-test
-```
-
-O serviço `blockchain-test` usa a rede interna `rede-dados`, `HARDHAT_NETWORK=hardhat` e `mobycontract_teste`; portanto não grava na rede Anvil usada pela aplicação.
-
-Frontend, no estágio de build que contém as dependências de desenvolvimento:
-
-```bash
-docker build --target build -t mobycontract/web-check ./web
-docker run --rm mobycontract/web-check pnpm run lint
-docker run --rm mobycontract/web-check pnpm run typecheck
-docker run --rm mobycontract/web-check pnpm test
-```
-
-## Segurança e limites do MVP
-
-O projeto inclui validação de entradas no backend, autorização por papel, escopo de recursos por usuário, proteção de sessão, limitação de tentativas, sanitização de conteúdo de modelos e cabeçalhos HTTP no proxy. Os controles precisam continuar sendo revisados em toda alteração relevante.
-
-O ambiente Anvil é adequado para demonstrar o fluxo técnico e os testes, mas não é uma rede distribuída de produção. Um produto operacional exigiria nós independentes, governança, gestão externa de chaves, monitoramento, backup, processo de resposta a incidentes e consenso permissionado, como Besu com QBFT.
+O banco de testes é `mobycontract_teste`, separado do banco principal.

@@ -1,0 +1,1 @@
+export { InquilinosView as default } from "@/features/inquilinos/views/inquilinos-view"

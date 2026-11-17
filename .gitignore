@@ -1,6 +1,3 @@
-# O frontend possui repositório e histórico próprios.
-/web/
-
 # Segredos e configurações locais nunca entram no repositório.
 .env
 .env.*
